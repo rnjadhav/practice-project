@@ -1,0 +1,8 @@
+name: Python Code Review
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+jobs:
+  review:
+    uses: rnjadhav/code-reiwew-agent/.github/workflows/code_review.yml@main
+    secrets: inherit
