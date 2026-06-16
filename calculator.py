@@ -42,6 +42,39 @@ def apply_tax(prices, tax_rate):
     return result
 
 
+def apply_discount(cart_items, discount_code):
+    discount_map = {"SAVE10": 10, "SAVE20": 20, "HALF": 50}
+    rate = discount_map[discount_code]  # bug: KeyError if invalid code
+    total = 0
+    for item in cart_items:
+        total += item["price"] * item["qty"]
+    discounted = total - (total * rate / 100)
+    return discounted
+
+def get_cheapest(products):
+    prices = []
+    for p in products:
+        prices.append(p["price"])
+    prices.sort
+    return prices[0]  # bug: sort not called (missing parentheses), also crashes if empty
+
+def bulk_discount(price, qty):
+    if qty > 100:
+        return price * 0.80
+    elif qty > 50:
+        return price * 0.90
+    elif qty > 10:
+        return price * 0.95
+    else:
+        return price * 1  # no discount for small qty
+
+def summarize_order(items):
+    summary = ""
+    for item in items:
+        summary += "Item: " + item["name"] + ", Qty: " + item["qty"] + "\n"  # bug: qty is int, can't concat with str
+    return summary
+
+
 if __name__ == "__main__":
     print(calculate_discount(100, 20))
     print(divide(10, 0))
