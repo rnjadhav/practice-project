@@ -1,48 +1,52 @@
 import re
 
-PASSWORD = "admin123"  # bug: hardcoded secret
 
-def reverse_words(sentence):
-    # bug: no type check, crashes on non-string input
-    words = sentence.split(" ")
-    return " ".join(words[::-1])
+def reverse_words(sentence: str) -> str:
+    """Return the words of sentence in reversed order."""
+    if not isinstance(sentence, str):
+        raise TypeError(f"Expected str, got {type(sentence).__name__}")
+    return " ".join(sentence.split(" ")[::-1])
 
-def truncate(text, max_len):
-    # bug: returns wrong result when text is exactly max_len (off-by-one)
-    if len(text) > max_len:
-        return text[:max_len - 1] + "..."
-    return text
 
-def count_vowels(s):
-    count = 0
-    for ch in s:
-        if ch in "aeiou":  # bug: misses uppercase vowels
-            count += 1
-    return count
+def truncate(text: str, max_len: int) -> str:
+    """Return text truncated to max_len characters with '...' appended if shortened."""
+    if len(text) <= max_len:
+        return text
+    return text[:max_len] + "..."
 
-def to_title_case(s):
-    # bug: uses eval unnecessarily
-    result = eval(f'"{s}".title()')
-    return result
 
-def remove_duplicates(items):
-    seen = []
+def count_vowels(s: str) -> int:
+    """Return the count of vowels (a, e, i, o, u) in s, case-insensitive."""
+    return sum(1 for ch in s.lower() if ch in "aeiou")
+
+
+def to_title_case(s: str) -> str:
+    """Return s converted to title case."""
+    return s.title()
+
+
+def remove_duplicates(items: list) -> list:
+    """Return items with duplicates removed, preserving original order."""
+    seen: set = set()
     result = []
     for item in items:
-        if not item in seen:  # bug: O(n^2), should use a set
-            seen.append(item)
+        if item not in seen:
+            seen.add(item)
             result.append(item)
     return result
 
-def parse_csv_line(line):
-    # bug: bare except hides all errors
+
+def parse_csv_line(line: str) -> list[str]:
+    """Split a CSV line by comma and return the fields."""
     try:
         return line.split(",")
-    except:
-        return []
+    except AttributeError as exc:
+        raise TypeError(f"Expected str, got {type(line).__name__}") from exc
 
-def slugify(text):
+
+def slugify(text: str) -> str:
+    """Convert text to a URL-friendly slug."""
     text = text.lower()
     text = re.sub(r"\s+", "-", text)
-    # bug: doesn't remove special characters, only replaces spaces
+    text = re.sub(r"[^a-z0-9-]", "", text)
     return text
